@@ -1,0 +1,4 @@
+# This folder holds translation packs, one subfolder per pack:
+#   translations/<id>/translation.json
+#   translations/<id>/<id>.zip
+# Remove this file once the first pack lands (or leave it — it's harmless).
