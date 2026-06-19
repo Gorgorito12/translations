@@ -8,16 +8,23 @@ directly — no GitHub releases needed. Mods point here via
 
 ## Structure
 
+Each translation keeps a **version history** under one folder per version:
+
 ```
 translations/
-  <id>/                     # id = the pack id (es, es-419, fr, …)
-    translation.json        # the manifest (includes contentHash + zip)
-    <id>.zip                # the translated files
+  <id>/                       # id = the language pack (es, es-419, fr, …)
+    <version>/                # one subfolder per version (1.2, 1.1, …)
+      translation.json        # the manifest (contentHash + zip + date)
+      <id>.zip                # the translated files
 schema/
-  translation.schema.json   # the translation.json format (for editors / CI)
+  translation.schema.json     # the translation.json format (for editors / CI)
 ```
 
-One folder per pack. The folder name should match the pack's `id`.
+- One folder per language; inside, **one subfolder per version**. The launcher
+  groups them into a single menu entry with a **version picker** (it shows the
+  latest 10 versions; older ones stay in git but aren't listed).
+- **Single-version (legacy) is still fine:** `translations/<id>/translation.json`
+  directly (no version subfolder) is read as one version.
 
 ## How to publish a pack
 
@@ -27,21 +34,24 @@ One folder per pack. The folder name should match the pack's `id`.
    `main` or open a PR). That's it — no release, no separate asset upload.
 3. Players see the pack the next time their launcher refreshes the language list.
 
-## Updating / improving a pack
+## Updating / adding a new version
 
-Re-export with the Packager and **commit the new `translation.json` + `.zip` over
-the old ones** in the same `translations/<id>/` folder. The packager bakes a
-`contentHash` into the manifest; because the bytes changed, the launcher treats it
-as a **new** translation and re-notifies users — **no version bump, no tag**. Same
-mod version, improved pack: just commit over it.
+Re-export with the Packager (bump the version) and **commit the new
+`translations/<id>/<version>/` subfolder** — never touch the old ones. The history
+accumulates append-only. The packager bakes a `contentHash` + `date` into each
+manifest; the launcher uses the newest version for the menu/notification and shows
+the rest in the version picker so users can roll back. (If you'd rather keep a
+single live version, just commit over the same files — both work.)
 
 ## How the launcher finds packs
 
-- Lists `translations/` via the GitHub Contents API, reads each
-  `translations/<id>/translation.json` via the raw CDN, and downloads the `.zip`
-  from `raw.githubusercontent.com/Gorgorito12/translations/main/translations/<id>/<zip>`.
-- Dedups / notifies on `id@contentHash`. The same key is computed by the central
-  notifier service, so a pack alerts once across the whole community.
+- Reads the whole tree in ONE call (Git Trees API) and each
+  `translations/<id>[/<version>]/translation.json` via the raw CDN; downloads the
+  `.zip` from
+  `raw.githubusercontent.com/Gorgorito12/translations/main/translations/<id>/<version>/<zip>`.
+- Dedups / notifies on `id@contentHash` of the NEWEST version. The same key is
+  computed by the central notifier service, so a pack alerts once across the
+  whole community.
 - The MD5 hashes in `translation.json` are the real compatibility check at apply
   time; `compatibleWith` is the translator's tested-versions hint.
 
