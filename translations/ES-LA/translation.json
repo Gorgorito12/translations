@@ -1,0 +1,22 @@
+{
+  "id": "ES-LA",
+  "name": "Espa\u00F1ol (Latinoamerica)",
+  "language": "ES-LA",
+  "author": "Gorgorito",
+  "version": "1.1",
+  "compatibleWith": [
+    "1.2.0d"
+  ],
+  "files": [
+    {
+      "path": "data/stringtabley.xml",
+      "originalHash": "56e365bd391406038a3e1f7c1995ceb4",
+      "translatedHash": "f90813bf745195b4fd8b8b2961f9e315",
+      "size": 10248660
+    }
+  ],
+  "contentHash": "2252e857cf871742",
+  "zip": "wol-ES-LA.zip",
+  "description": "Se reemplaza el t\u00E9rmino \u00ABEra\u00BB por \u00ABEdad\u00BB. Por ejemplo, \u00ABSegunda Era\u00BB ahora se mostrar\u00E1 como \u00ABSegunda Edad\u00BB.",
+  "targetMod": "wol"
+}
